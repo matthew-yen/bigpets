@@ -10,7 +10,7 @@
     async function loaded(reader) {
       const exampleImage = await fetch(reader.result).then(r => r.blob());
 
-      const client = await Client.connect("user/minima");
+      const client = await Client.connect("matthewyen/minima");
       const result = await client.predict("/predict", { 
         img: exampleImage, 
       });
