@@ -1,38 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Classifier</title>
-  <script type="module">
-    import { Client } from "@gradio/client";
-
-    async function loaded(reader) {
-      const exampleImage = await fetch(reader.result).then(r => r.blob());
-
-      const client = await Client.connect("matthewyen/minima");
-      const result = await client.predict("/predict", { 
-        img: exampleImage, 
-      });
-
-      const label = result.data[0].confidences[0].label;
-      const div = document.createElement('div');
-      div.innerHTML = `<br/><img src="${reader.result}" width="300"> <p>${label}</p>`;
-      document.body.append(div);
-    }
-
-    function read(file) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => loaded(reader));
-      reader.readAsDataURL(file);
-    }
-
-    document.getElementById('photos').addEventListener('input', () => {
-      [...document.getElementById('photos').files].map(read);
+<input id="photos" type="file" multiple="">
+<script>
+  async function loaded(reader) {
+    const client = await Client.connect("matthewyen/minima");
+    const result = await client.predict("/predict", { 
+    				img: exampleImage, 
     });
-  </script>
-</head>
-<body>
-  <input id="photos" type="file" multiple="">
-</body>
-</html>
+    const json = await response.json();
+    const label = json['data'][0]['confidences'][0]['label'];
+    const div = document.createElement('div');
+    div.innerHTML = `<br/><img src="${reader.result}" width="300"> <p>${label}</p>`
+    document.body.append(div);
+  }
+  function read(file) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => loaded(reader))
+    reader.readAsDataURL(file);
+  }
+  photos.addEventListener('input', () => { [...photos.files].map(read) });
+</script>
